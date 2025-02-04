@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
 	"github.com/CatMacales/route256/cart/internal/http-server"
+	"github.com/CatMacales/route256/cart/internal/lib/validation"
 	"github.com/CatMacales/route256/cart/internal/service"
 	"net/http"
 	"strconv"
@@ -14,7 +15,7 @@ const GET_CART = "GET /user/<user_id>/cart"
 
 type GetCartRequest struct {
 	// path value
-	UserID int64 `json:"user_id"`
+	UserID int64 `json:"user_id" validate:"required,gte=0"`
 }
 
 type GetCartResponse struct {
@@ -31,8 +32,11 @@ func (s *Server) GetCart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	getCartRequest := GetCartRequest{UserID: userID}
-	// TODO: add validation
-	_ = getCartRequest
+
+	err = validation.BeautyStructValidate(getCartRequest)
+	if err != nil {
+		http_server.GetErrorResponse(w, DELETE_ITEM, err, http.StatusBadRequest)
+	}
 
 	cart, err := s.cartService.GetCart(r.Context(), userID)
 	if err != nil {

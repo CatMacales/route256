@@ -6,6 +6,7 @@ import (
 	"github.com/CatMacales/route256/cart/internal/app/product"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
 	"github.com/CatMacales/route256/cart/internal/http-server"
+	"github.com/CatMacales/route256/cart/internal/lib/validation"
 	"io"
 	"net/http"
 	"strconv"
@@ -15,11 +16,11 @@ const ADD_ITEM = "POST /user/<user_id>/cart/<sku_id>"
 
 type AddItemRequest struct {
 	// path value
-	UserID int64 `json:"user_id"`
-	SKU    int64 `json:"sku"`
+	UserID int64 `json:"user_id" validate:"required,gte=0"`
+	SKU    int64 `json:"sku" validate:"required,gte=0"`
 
 	// body value
-	Count uint16 `json:"count"`
+	Count uint16 `json:"count" validate:"required,gte=0"`
 }
 
 func (s *Server) AddItem(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +52,11 @@ func (s *Server) AddItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: add validation
+	err = validation.BeautyStructValidate(addItemRequest)
+	if err != nil {
+		http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusBadRequest)
+		return
+	}
 
 	inputItem := model.Item{
 		SKU:   addItemRequest.SKU,

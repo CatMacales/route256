@@ -2,6 +2,7 @@ package cart_http
 
 import (
 	"github.com/CatMacales/route256/cart/internal/http-server"
+	"github.com/CatMacales/route256/cart/internal/lib/validation"
 	"net/http"
 	"strconv"
 )
@@ -10,7 +11,7 @@ const DELETE_CART = "DELETE /user/<user_id>/cart"
 
 type DeleteCartRequest struct {
 	// path value
-	UserID int64 `json:"user_id"`
+	UserID int64 `json:"user_id" validate:"required,gte=0"`
 }
 
 func (s *Server) DeleteCart(w http.ResponseWriter, r *http.Request) {
@@ -22,8 +23,11 @@ func (s *Server) DeleteCart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	deleteCartRequest := DeleteCartRequest{UserID: userID}
-	// TODO: add validation
-	_ = deleteCartRequest
+
+	err = validation.BeautyStructValidate(deleteCartRequest)
+	if err != nil {
+		http_server.GetErrorResponse(w, DELETE_CART, err, http.StatusBadRequest)
+	}
 
 	err = s.cartService.DeleteCart(r.Context(), userID)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"github.com/CatMacales/route256/cart/internal/app/product"
 	"github.com/CatMacales/route256/cart/internal/http-server/handlers/cart"
 	"github.com/CatMacales/route256/cart/internal/http-server/middleware"
+	"github.com/CatMacales/route256/cart/internal/lib/validation"
 	"github.com/CatMacales/route256/cart/internal/repository/memory/cart"
 	"github.com/CatMacales/route256/cart/internal/service/cart"
 	"log"
@@ -26,6 +27,8 @@ func New(host string, port uint32, productURL, productToken string) *App {
 	cartService := cart.NewService(cartRepository, productApp)
 
 	server := cart_http.New(cartService)
+
+	validation.NewValidator() // init beauty validator
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /user/{user_id}/cart/{sku_id}", server.AddItem)
