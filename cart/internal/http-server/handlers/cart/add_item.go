@@ -3,13 +3,11 @@ package cart_http
 import (
 	"encoding/json"
 	"errors"
-	"github.com/CatMacales/route256/cart/internal/app/product"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
 	"github.com/CatMacales/route256/cart/internal/http-server"
 	"github.com/CatMacales/route256/cart/internal/lib/validation"
-	"io"
+	"github.com/CatMacales/route256/cart/internal/service"
 	"net/http"
-	"strconv"
 )
 
 const ADD_ITEM = "POST /user/<user_id>/cart/<sku_id>"
@@ -24,33 +22,26 @@ type AddItemRequest struct {
 }
 
 func (s *Server) AddItem(w http.ResponseWriter, r *http.Request) {
-	rawUserID := r.PathValue("user_id")
-	userID, err := strconv.ParseInt(rawUserID, 10, 64)
+	userID, err := parseIntPathValue(r, "user_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusBadRequest)
 		return
 	}
 
-	rawSKU := r.PathValue("sku_id")
-	sku, err := strconv.ParseInt(rawSKU, 10, 64)
+	sku, err := parseIntPathValue(r, "sku_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusBadRequest)
-		return
-	}
-
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusInternalServerError)
 		return
 	}
 
 	addItemRequest := AddItemRequest{UserID: userID, SKU: sku}
 
-	err = json.Unmarshal(body, &addItemRequest)
+	err = json.NewDecoder(r.Body).Decode(&addItemRequest)
 	if err != nil {
 		http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusBadRequest)
 		return
 	}
+	defer r.Body.Close()
 
 	err = validation.BeautyStructValidate(addItemRequest)
 	if err != nil {
@@ -65,7 +56,7 @@ func (s *Server) AddItem(w http.ResponseWriter, r *http.Request) {
 
 	err = s.cartService.AddItem(r.Context(), addItemRequest.UserID, inputItem)
 	if err != nil {
-		if errors.Is(err, product_app.ErrProductNotFound) {
+		if errors.Is(err, service.ErrEmptyCart) {
 			http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusPreconditionFailed)
 			return
 		}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"strings"
 	"sync"
 )
 
@@ -16,10 +17,13 @@ type Validator struct {
 	v *validator.Validate
 }
 
-func NewValidator() {
+// InitValidator initializes and returns a singleton instance of the Validator.
+// The Validator is configured with required struct validation enabled.
+func InitValidator() *Validator {
 	once.Do(func() {
 		globalValidator = &Validator{v: validator.New(validator.WithRequiredStructEnabled())}
 	})
+	return globalValidator
 }
 
 func BeautyStructValidate(s any) error {
@@ -31,14 +35,18 @@ func BeautyStructValidate(s any) error {
 	if rawErr != nil {
 		var err validator.ValidationErrors
 		if errors.As(rawErr, &err) {
-			switch err[0].Tag() {
-			case "gte":
-				return fmt.Errorf("%s must be greater than %s", err[0].Field(), err[0].Param())
-			case "required":
-				return fmt.Errorf("%s is required", err[0].Field())
-			default:
-				return err
+			var errorMessages []string
+			for _, validationErr := range err {
+				switch validationErr.Tag() {
+				case "gte":
+					errorMessages = append(errorMessages, fmt.Sprintf("%s must be greater than %s", validationErr.Field(), validationErr.Param()))
+				case "required":
+					errorMessages = append(errorMessages, fmt.Sprintf("%s is required", validationErr.Field()))
+				default:
+					errorMessages = append(errorMessages, validationErr.Error())
+				}
 			}
+			return fmt.Errorf(strings.Join(errorMessages, ", "))
 		}
 		return rawErr
 	}

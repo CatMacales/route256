@@ -9,7 +9,7 @@ type CartRepository interface {
 	AddItem(context.Context, model.UserID, model.Item) error
 	DeleteItem(context.Context, model.UserID, model.Sku) error
 	DeleteCart(context.Context, model.UserID) error
-	GetCart(context.Context, model.UserID) (*[]model.Item, error)
+	GetCart(context.Context, model.UserID) ([]model.Item, error)
 }
 
 type ProductService interface {

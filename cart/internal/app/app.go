@@ -28,7 +28,7 @@ func New(host string, port uint32, productURL, productToken string) *App {
 
 	server := cart_http.New(cartService)
 
-	validation.NewValidator() // init beauty validator
+	validation.InitValidator() // init beauty validator
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /user/{user_id}/cart/{sku_id}", server.AddItem)

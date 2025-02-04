@@ -1,6 +1,9 @@
 package product_app
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 type App struct {
 	url    string
@@ -8,12 +11,21 @@ type App struct {
 	client *http.Client
 }
 
-// TODO: add middleware
-
 func New(url, token string, client *http.Client) *App {
 	return &App{
 		url:    url,
 		token:  token,
 		client: client,
+	}
+}
+
+func handleHTTPError(statusCode int) error {
+	switch statusCode {
+	case http.StatusNotFound:
+		return ErrProductNotFound
+	case http.StatusUnauthorized:
+		return ErrInvalidToken
+	default:
+		return fmt.Errorf("unexpected status code: %d", statusCode)
 	}
 }

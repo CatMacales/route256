@@ -3,6 +3,8 @@ package cart_http
 import (
 	"context"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
+	"net/http"
+	"strconv"
 )
 
 type CartService interface {
@@ -18,4 +20,9 @@ type Server struct {
 
 func New(cartService CartService) *Server {
 	return &Server{cartService: cartService}
+}
+
+func parseIntPathValue(r *http.Request, key string) (int64, error) {
+	rawValue := r.PathValue(key)
+	return strconv.ParseInt(rawValue, 10, 64)
 }

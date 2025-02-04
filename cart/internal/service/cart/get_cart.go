@@ -11,26 +11,29 @@ import (
 	"sort"
 )
 
+// GetCart return the cart by userID. Items sorts them by SKU.
+// If the user is not found or the cart is empty, it returns an ErrEmptyCart error.
+// If a product is not found, it returns an ErrProductNotFound error.
 func (s *Service) GetCart(ctx context.Context, userID model.UserID) (*model.Cart, error) {
 	items, err := s.cartRepository.GetCart(ctx, userID)
-	if err != nil || len(*items) == 0 {
-		if errors.Is(err, repository.ErrUserNotFound) || len(*items) == 0 {
+	if err != nil || len(items) == 0 {
+		if errors.Is(err, repository.ErrUserNotFound) || len(items) == 0 {
 			return nil, service.ErrEmptyCart
 		}
 		return nil, err
 	}
 
-	sort.Slice(*items, func(i, j int) bool {
-		return (*items)[i].SKU < (*items)[j].SKU
+	sort.Slice(items, func(i, j int) bool {
+		return (items)[i].SKU < (items)[j].SKU
 	})
 
 	var cart model.Cart
 
-	for _, item := range *items {
+	for _, item := range items {
 		product, err := s.productService.GetProduct(ctx, uint32(item.SKU))
 		if err != nil {
 			if errors.Is(err, product_app.ErrProductNotFound) {
-				return nil, fmt.Errorf("%w, SKU: %d", err, item.SKU)
+				return nil, fmt.Errorf("SKU: %d, err: %w", item.SKU, service.ErrProductNotFound)
 			}
 
 			return nil, err

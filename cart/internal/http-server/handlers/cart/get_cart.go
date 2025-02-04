@@ -8,7 +8,6 @@ import (
 	"github.com/CatMacales/route256/cart/internal/lib/validation"
 	"github.com/CatMacales/route256/cart/internal/service"
 	"net/http"
-	"strconv"
 )
 
 const GET_CART = "GET /user/<user_id>/cart"
@@ -24,8 +23,7 @@ type GetCartResponse struct {
 }
 
 func (s *Server) GetCart(w http.ResponseWriter, r *http.Request) {
-	rawUserID := r.PathValue("user_id")
-	userID, err := strconv.ParseInt(rawUserID, 10, 64)
+	userID, err := parseIntPathValue(r, "user_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, GET_CART, err, http.StatusBadRequest)
 		return
@@ -36,10 +34,15 @@ func (s *Server) GetCart(w http.ResponseWriter, r *http.Request) {
 	err = validation.BeautyStructValidate(getCartRequest)
 	if err != nil {
 		http_server.GetErrorResponse(w, DELETE_ITEM, err, http.StatusBadRequest)
+		return
 	}
 
 	cart, err := s.cartService.GetCart(r.Context(), userID)
 	if err != nil {
+		if errors.Is(err, service.ErrProductNotFound) {
+			http_server.GetErrorResponse(w, GET_CART, err, http.StatusBadRequest)
+			return
+		}
 		if errors.Is(err, service.ErrEmptyCart) {
 			http_server.GetErrorResponse(w, GET_CART, err, http.StatusNotFound)
 			return
@@ -56,8 +59,12 @@ func (s *Server) GetCart(w http.ResponseWriter, r *http.Request) {
 	rawResponse, err := json.Marshal(getCartResponse)
 	if err != nil {
 		http_server.GetErrorResponse(w, GET_CART, err, http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(rawResponse)
+	if _, err := w.Write(rawResponse); err != nil {
+		http_server.GetErrorResponse(w, GET_CART, err, http.StatusInternalServerError)
+		return
+	}
 }
