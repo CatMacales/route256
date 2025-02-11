@@ -1,4 +1,4 @@
-package cart_http
+package cart_handler
 
 import (
 	"encoding/json"
@@ -21,7 +21,7 @@ type AddItemRequest struct {
 	Count uint16 `json:"count" validate:"required,gte=0"`
 }
 
-func (s *Server) AddItem(w http.ResponseWriter, r *http.Request) {
+func (s *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
 	userID, err := parseIntPathValue(r, "user_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusBadRequest)

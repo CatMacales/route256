@@ -1,4 +1,4 @@
-package cart_http
+package cart_handler
 
 import (
 	"encoding/json"
@@ -22,7 +22,7 @@ type GetCartResponse struct {
 	TotalPrice uint32           `json:"total_price,omitempty"`
 }
 
-func (s *Server) GetCart(w http.ResponseWriter, r *http.Request) {
+func (s *Handler) GetCart(w http.ResponseWriter, r *http.Request) {
 	userID, err := parseIntPathValue(r, "user_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, GET_CART, err, http.StatusBadRequest)
