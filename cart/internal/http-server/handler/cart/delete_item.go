@@ -14,7 +14,7 @@ type DeleteItemRequest struct {
 	SKU    int64 `json:"sku" validate:"required,gte=0"`
 }
 
-func (s *Handler) DeleteItem(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) DeleteItem(w http.ResponseWriter, r *http.Request) {
 	userID, err := parseIntPathValue(r, "user_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, DELETE_ITEM, err, http.StatusBadRequest)
@@ -35,7 +35,7 @@ func (s *Handler) DeleteItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.cartService.DeleteItem(r.Context(), userID, sku)
+	err = h.cartService.DeleteItem(r.Context(), userID, sku)
 	if err != nil {
 		http_server.GetErrorResponse(w, DELETE_ITEM, err, http.StatusInternalServerError)
 		return

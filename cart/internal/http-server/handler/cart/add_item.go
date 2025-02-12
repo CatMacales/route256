@@ -21,7 +21,7 @@ type AddItemRequest struct {
 	Count uint16 `json:"count" validate:"required,gte=0"`
 }
 
-func (s *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
 	userID, err := parseIntPathValue(r, "user_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusBadRequest)
@@ -54,7 +54,7 @@ func (s *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
 		Count: addItemRequest.Count,
 	}
 
-	err = s.cartService.AddItem(r.Context(), addItemRequest.UserID, inputItem)
+	err = h.cartService.AddItem(r.Context(), addItemRequest.UserID, inputItem)
 	if err != nil {
 		if errors.Is(err, service.ErrEmptyCart) {
 			http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusPreconditionFailed)

@@ -10,7 +10,7 @@ import (
 
 type Server struct {
 	server *http.Server
-	Router *http.Handler
+	Router http.Handler
 }
 
 func New(host string, port uint32, h *cart_handler.Handler) *Server {
@@ -30,7 +30,7 @@ func New(host string, port uint32, h *cart_handler.Handler) *Server {
 
 	return &Server{
 		server: server,
-		Router: &logMux,
+		Router: logMux,
 	}
 }
 

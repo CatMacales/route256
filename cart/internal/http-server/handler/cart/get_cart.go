@@ -22,7 +22,7 @@ type GetCartResponse struct {
 	TotalPrice uint32           `json:"total_price,omitempty"`
 }
 
-func (s *Handler) GetCart(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetCart(w http.ResponseWriter, r *http.Request) {
 	userID, err := parseIntPathValue(r, "user_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, GET_CART, err, http.StatusBadRequest)
@@ -37,7 +37,7 @@ func (s *Handler) GetCart(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cart, err := s.cartService.GetCart(r.Context(), userID)
+	cart, err := h.cartService.GetCart(r.Context(), userID)
 	if err != nil {
 		if errors.Is(err, service.ErrProductNotFound) {
 			http_server.GetErrorResponse(w, GET_CART, err, http.StatusBadRequest)
