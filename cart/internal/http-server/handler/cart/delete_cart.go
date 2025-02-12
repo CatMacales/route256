@@ -1,4 +1,4 @@
-package cart_http
+package cart_handler
 
 import (
 	"github.com/CatMacales/route256/cart/internal/http-server"
@@ -13,7 +13,7 @@ type DeleteCartRequest struct {
 	UserID int64 `json:"user_id" validate:"required,gte=0"`
 }
 
-func (s *Server) DeleteCart(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) DeleteCart(w http.ResponseWriter, r *http.Request) {
 	userID, err := parseIntPathValue(r, "user_id")
 	if err != nil {
 		http_server.GetErrorResponse(w, DELETE_CART, err, http.StatusBadRequest)
@@ -28,7 +28,7 @@ func (s *Server) DeleteCart(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.cartService.DeleteCart(r.Context(), userID)
+	err = h.cartService.DeleteCart(r.Context(), userID)
 	if err != nil {
 		http_server.GetErrorResponse(w, DELETE_CART, err, http.StatusInternalServerError)
 		return

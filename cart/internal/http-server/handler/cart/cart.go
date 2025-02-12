@@ -1,4 +1,4 @@
-package cart_http
+package cart_handler
 
 import (
 	"context"
@@ -14,12 +14,12 @@ type CartService interface {
 	GetCart(ctx context.Context, userID model.UserID) (*model.Cart, error)
 }
 
-type Server struct {
+type Handler struct {
 	cartService CartService
 }
 
-func New(cartService CartService) *Server {
-	return &Server{cartService: cartService}
+func New(cartService CartService) *Handler {
+	return &Handler{cartService: cartService}
 }
 
 func parseIntPathValue(r *http.Request, key string) (int64, error) {

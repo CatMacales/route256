@@ -3,7 +3,10 @@ package cart
 import (
 	"context"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
+	"github.com/CatMacales/route256/cart/internal/http-server/handler/cart"
 )
+
+var _ cart_handler.CartService = (*Service)(nil)
 
 type CartRepository interface {
 	AddItem(context.Context, model.UserID, model.Item) error
