@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package route256.loms.pkg.loms.v1;
+
+option go_package = "github.com/CatMacales/route256/loms/pkg/api/loms/v1;loms";
+
+service LOMS{
+    rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){}
+
+    rpc GetOrderInfo(GetOrderInfoRequest) returns (GetOrderInfoResponse){}
+
+    rpc PayOrder(PayOrderRequest) returns (PayOrderResponse){}
+
+    rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse){}
+
+    rpc GetStockInfo(GetStockInfoRequest) returns (GetStockInfoResponse){}
+}
+
+message CreateOrderRequest{
+    int64 user_id = 1;
+    repeated Item items = 2;
+}
+
+message CreateOrderResponse{
+    int64 order_id = 1;
+}
+
+message GetOrderInfoRequest{
+    int64 order_id = 1;
+}
+
+message GetOrderInfoResponse{
+    OrderStatus status = 1;
+    int64 user_id = 2;
+    repeated Item items = 3;
+}
+
+message PayOrderRequest{
+  int64 order_id = 1;
+}
+
+message PayOrderResponse{
+
+}
+
+message CancelOrderRequest{
+    int64 order_id = 1;
+}
+
+message CancelOrderResponse{
+
+}
+
+message GetStockInfoRequest{
+    uint32 sku = 1;
+}
+
+message GetStockInfoResponse{
+    uint64 count = 1;
+}
+
+message Item{
+    uint32 sku = 1;
+    uint32 count = 2;
+}
+
+enum OrderStatus {
+    ORDER_STATUS_UNSPECIFIED = 0;
+    ORDER_STATUS_NEW = 1;
+    ORDER_STATUS_AWAITING_PAYMENT = 2;
+    ORDER_STATUS_FAILED = 3;
+    ORDER_STATUS_PAYED = 4;
+    ORDER_STATUS_CANCELED = 5;
+}
