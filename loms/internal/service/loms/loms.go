@@ -3,7 +3,10 @@ package loms
 import (
 	"context"
 	"github.com/CatMacales/route256/loms/internal/domain/model"
+	"github.com/CatMacales/route256/loms/internal/grpc/loms"
 )
+
+var _ loms_grpc.LOMSService = (*Service)(nil)
 
 type OrderProvider interface {
 	Create(context.Context, model.Order) (model.OrderID, error)

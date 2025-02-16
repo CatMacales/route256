@@ -6,7 +6,7 @@ import (
 	"github.com/CatMacales/route256/loms/internal/domain/model"
 )
 
-func (s *Service) Create(ctx context.Context, order model.Order) (model.OrderID, error) {
+func (s *Service) CreateOrder(ctx context.Context, order model.Order) (model.OrderID, error) {
 	order.Status = model.StatusNew
 
 	orderID, err := s.orderProvider.Create(ctx, order)
