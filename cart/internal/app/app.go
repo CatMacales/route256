@@ -34,15 +34,3 @@ func New(host string, port uint32, productURL, productToken string) *App {
 		Server:         srv,
 	}
 }
-
-// MustRun starts the server. Panic if there is an error.
-func (a *App) MustRun() {
-	if err := a.Run(); err != nil {
-		panic(err)
-	}
-}
-
-// Run starts the server.
-func (a *App) Run() error {
-	return a.Server.Serve()
-}

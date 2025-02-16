@@ -16,5 +16,8 @@ func main() {
 
 	application := app.New(cfg.Host, cfg.Port, cfg.ProductService.URL, cfg.ProductService.Token)
 
-	application.MustRun()
+	err := application.Server.Serve()
+	if err != nil {
+		panic(err)
+	}
 }
