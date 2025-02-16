@@ -5,7 +5,7 @@ import (
 	"github.com/CatMacales/route256/cart/internal/service/cart"
 )
 
-var _ cart.CartRepository = (*Repository)(nil)
+var _ cart.CartProvider = (*Repository)(nil)
 
 type Storage = map[model.UserID][]model.Item
 

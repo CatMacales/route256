@@ -8,7 +8,7 @@ import (
 
 var _ cart_handler.CartService = (*Service)(nil)
 
-type CartRepository interface {
+type CartProvider interface {
 	AddItem(context.Context, model.UserID, model.Item) error
 	DeleteItem(context.Context, model.UserID, model.Sku) error
 	DeleteCart(context.Context, model.UserID) error
@@ -20,11 +20,11 @@ type ProductService interface {
 }
 
 type Service struct {
-	cartRepository CartRepository
+	cartRepository CartProvider
 	productService ProductService
 }
 
-func NewService(cartRepository CartRepository, productService ProductService) *Service {
+func NewService(cartRepository CartProvider, productService ProductService) *Service {
 	return &Service{
 		cartRepository: cartRepository,
 		productService: productService,

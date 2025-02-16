@@ -25,9 +25,9 @@ var OrderStatuses = map[OrderStatus]string{
 }
 
 type Order struct {
-	UserID UserID
-	Items  []Item
-	Status OrderStatus
+	UserID UserID      `json:"user_id"`
+	Items  []Item      `json:"items"`
+	Status OrderStatus `json:"status"`
 }
 
 func (o OrderStatus) String() string {
