@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/CatMacales/route256/loms/internal/grpc/loms"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 )
@@ -19,6 +20,8 @@ func New(lomsService loms_grpc.LOMSService, host string, port uint32) *App {
 	grpcServer := grpc.NewServer()
 
 	loms_grpc.RegisterServer(grpcServer, lomsService)
+
+	reflection.Register(grpcServer)
 
 	return &App{
 		gRPCServer: grpcServer,
