@@ -27,6 +27,6 @@ cyclo-report:
 cognit-report:
 	$(CART_BIN)/gocognit -avg -top 10 -ignore '.*_mock.go' .
 
-get-loms-grpc:
+get-loms-gen-proto:
 	mkdir -p ./pkg/api
 	cp -r ../loms/pkg/api/loms ./pkg/api
