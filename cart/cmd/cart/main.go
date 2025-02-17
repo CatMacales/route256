@@ -14,7 +14,9 @@ const (
 func main() {
 	cfg := config.MustLoad()
 
-	application := app.New(cfg.Host, cfg.Port, cfg.ProductService.URL, cfg.ProductService.Token)
+	application := app.New(cfg.Host, cfg.Port, cfg.ProductService.URL, cfg.ProductService.Token, cfg.LOMSService.URL)
+
+	application.LOMSService.MustConnect()
 
 	err := application.Server.Serve()
 	if err != nil {

@@ -1,6 +1,7 @@
 package app
 
 import (
+	loms_app "github.com/CatMacales/route256/cart/internal/app/loms"
 	"github.com/CatMacales/route256/cart/internal/app/product"
 	"github.com/CatMacales/route256/cart/internal/app/server"
 	"github.com/CatMacales/route256/cart/internal/http-server/handler/cart"
@@ -13,15 +14,18 @@ import (
 
 type App struct {
 	ProductService *product_app.App
+	LOMSService    *loms_app.App
 	Server         *server.Server
 }
 
-func New(host string, port uint32, productURL, productToken string) *App {
+func New(host string, port uint32, productURL, productToken, lomsURL string) *App {
 	productApp := product_app.New(productURL, productToken, &http.Client{Transport: middleware.NewRetry(http.DefaultTransport)})
+
+	lomsApp := loms_app.New(lomsURL)
 
 	cartRepository := cart_repository.NewRepository()
 
-	cartService := cart.NewService(cartRepository, productApp)
+	cartService := cart.NewService(cartRepository, productApp, lomsApp)
 
 	handler := cart_handler.New(cartService)
 
@@ -31,6 +35,7 @@ func New(host string, port uint32, productURL, productToken string) *App {
 
 	return &App{
 		ProductService: productApp,
+		LOMSService:    lomsApp,
 		Server:         srv,
 	}
 }

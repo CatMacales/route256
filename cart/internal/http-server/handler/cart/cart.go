@@ -3,15 +3,17 @@ package cart_handler
 import (
 	"context"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
+	"github.com/google/uuid"
 	"net/http"
 	"strconv"
 )
 
 type CartService interface {
-	AddItem(ctx context.Context, userID model.UserID, item model.Item) error
-	DeleteItem(ctx context.Context, userID model.UserID, sku model.Sku) error
-	DeleteCart(ctx context.Context, userID model.UserID) error
-	GetCart(ctx context.Context, userID model.UserID) (*model.Cart, error)
+	AddItem(context.Context, model.UserID, model.Item) error
+	DeleteItem(context.Context, model.UserID, model.Sku) error
+	DeleteCart(context.Context, model.UserID) error
+	GetCart(context.Context, model.UserID) (*model.Cart, error)
+	Checkout(context.Context, model.UserID) (uuid.UUID, error)
 }
 
 type Handler struct {

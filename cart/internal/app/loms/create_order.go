@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
 	"github.com/CatMacales/route256/cart/pkg/api/loms/v1"
+	"github.com/google/uuid"
 )
 
-func (a *App) CreateOrder(ctx context.Context, userID model.UserID, items []model.Item) ([16]byte, error) {
+func (a *App) CreateOrder(ctx context.Context, userID model.UserID, items []model.Item) (uuid.UUID, error) {
 
 	protoItems := make([]*loms.Item, 0, len(items))
 

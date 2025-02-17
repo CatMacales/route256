@@ -47,13 +47,13 @@ func (a *App) InitStocks(ctx context.Context, path string) error {
 		return err
 	}
 
-	var stockData []stockData
-	err = json.Unmarshal(data, &stockData)
+	var stocks []stockData
+	err = json.Unmarshal(data, &stocks)
 	if err != nil {
 		return err
 	}
 
-	for _, stock := range stockData {
+	for _, stock := range stocks {
 		err = a.stockRepository.Add(ctx, stock.SKU, stock.TotalCount, stock.Reserved)
 		if err != nil {
 			return err

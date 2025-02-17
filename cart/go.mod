@@ -5,6 +5,7 @@ go 1.22.0
 require (
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/gojuno/minimock/v3 v3.4.4
+	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/stretchr/testify v1.8.4
 	google.golang.org/grpc v1.70.0

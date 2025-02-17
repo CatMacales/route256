@@ -20,6 +20,7 @@ func New(host string, port uint32, h *cart_handler.Handler) *Server {
 	mux.HandleFunc("DELETE /user/{user_id}/cart/{sku_id}", h.DeleteItem)
 	mux.HandleFunc("DELETE /user/{user_id}/cart", h.DeleteCart)
 	mux.HandleFunc("GET /user/{user_id}/cart", h.GetCart)
+	mux.HandleFunc("POST /cart/checkout", h.Checkout)
 
 	logMux := middleware.NewLogger(mux)
 

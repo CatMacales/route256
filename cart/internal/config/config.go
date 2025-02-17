@@ -11,11 +11,16 @@ type Config struct {
 	Host           string               `yaml:"host" env-default:"localhost"`
 	Port           uint32               `yaml:"port" env-default:"8080"`
 	ProductService ProductServiceConfig `yaml:"product_service"`
+	LOMSService    LOMSServiceConfig    `yaml:"loms_service"`
 }
 
 type ProductServiceConfig struct {
 	URL   string `yaml:"url"`
 	Token string `yaml:"token"`
+}
+
+type LOMSServiceConfig struct {
+	URL string `yaml:"url"`
 }
 
 func MustLoad() *Config {
