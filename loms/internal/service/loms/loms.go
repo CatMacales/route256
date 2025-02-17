@@ -15,7 +15,6 @@ type OrderProvider interface {
 }
 
 type StockProvider interface {
-	Add(context.Context, model.Sku, uint64) error
 	GetBySKU(context.Context, model.Sku) (*model.Stock, error)
 	Reserve(context.Context, []model.Item) error
 	ReserveCancel(context.Context, []model.Item) error
