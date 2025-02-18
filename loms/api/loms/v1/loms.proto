@@ -4,6 +4,8 @@ package route256.loms.pkg.loms.v1;
 
 option go_package = "github.com/CatMacales/route256/loms/pkg/api/loms/v1;loms";
 
+import "validate/validate.proto";
+
 service LOMS{
   rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){}
 
@@ -17,16 +19,16 @@ service LOMS{
 }
 
 message CreateOrderRequest{
-  int64 user_id = 1;
-  repeated Item items = 2;
+  int64 user_id = 1 [(validate.rules).int64.gt = 0];
+  repeated Item items = 2 [(validate.rules).repeated.items.message.required = true];
 }
 
 message CreateOrderResponse{
-  bytes order_id = 1;
+  string order_id = 1;
 }
 
 message GetOrderInfoRequest{
-  bytes order_id = 1;
+  string order_id = 1[(validate.rules).string.uuid = true];
 }
 
 message GetOrderInfoResponse{
@@ -36,7 +38,7 @@ message GetOrderInfoResponse{
 }
 
 message PayOrderRequest{
-  bytes order_id = 1;
+  string order_id = 1 [(validate.rules).string.uuid = true];
 }
 
 message PayOrderResponse{
@@ -44,7 +46,7 @@ message PayOrderResponse{
 }
 
 message CancelOrderRequest{
-  bytes order_id = 1;
+  string order_id = 1 [(validate.rules).string.uuid = true];
 }
 
 message CancelOrderResponse{
@@ -52,7 +54,7 @@ message CancelOrderResponse{
 }
 
 message GetStockInfoRequest{
-  uint32 sku = 1;
+  uint32 sku = 1 [(validate.rules).uint32.gt = 0];
 }
 
 message GetStockInfoResponse{
@@ -60,8 +62,8 @@ message GetStockInfoResponse{
 }
 
 message Item{
-  uint32 sku = 1;
-  uint32 count = 2;
+  uint32 sku = 1 [(validate.rules).uint32.gt = 0];
+  uint32 count = 2[(validate.rules).uint32 = {gt:0,lte:65535}];
 }
 
 enum OrderStatus {

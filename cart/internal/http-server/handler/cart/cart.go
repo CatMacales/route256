@@ -8,6 +8,8 @@ import (
 	"strconv"
 )
 
+// TODO: https://medium.com/@rluders/improving-request-validation-and-response-handling-in-go-microservices-cc54208123f2
+
 type CartService interface {
 	AddItem(context.Context, model.UserID, model.Item) error
 	DeleteItem(context.Context, model.UserID, model.Sku) error

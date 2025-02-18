@@ -20,5 +20,5 @@ func (s *server) CreateOrder(ctx context.Context, request *loms.CreateOrderReque
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
-	return &loms.CreateOrderResponse{OrderId: orderID[:]}, nil
+	return &loms.CreateOrderResponse{OrderId: orderID.String()}, nil
 }

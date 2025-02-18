@@ -1,12 +1,12 @@
 package cart_handler
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"github.com/CatMacales/route256/cart/internal/http-server"
 	"github.com/CatMacales/route256/cart/internal/lib/validation"
 	"github.com/CatMacales/route256/cart/internal/repository"
-	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -17,7 +17,7 @@ type CheckoutRequest struct {
 }
 
 type CheckoutResponse struct {
-	OrderID uuid.UUID `json:"order_id"`
+	OrderID string `json:"order_id"`
 }
 
 func (h *Handler) Checkout(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func (h *Handler) Checkout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	checkoutResponse := CheckoutResponse{
-		OrderID: orderID,
+		OrderID: base64.StdEncoding.EncodeToString([]byte(orderID.String())),
 	}
 
 	rawResponse, err := json.Marshal(checkoutResponse)

@@ -13,4 +13,5 @@
 /cart/bin
 /loms/bin
 /loms/config
+/loms/vendor-proto
 .qodo

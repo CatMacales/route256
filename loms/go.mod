@@ -3,6 +3,7 @@ module github.com/CatMacales/route256/loms
 go 1.22.0
 
 require (
+	github.com/envoyproxy/protoc-gen-validate v1.1.0
 	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	google.golang.org/grpc v1.70.0

@@ -2,6 +2,7 @@ package grpc_app
 
 import (
 	"fmt"
+	"github.com/CatMacales/route256/loms/internal/grpc/interceptor"
 	"github.com/CatMacales/route256/loms/internal/grpc/loms"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -17,7 +18,7 @@ type App struct {
 
 // New creates new gRPC server app.
 func New(lomsService loms_grpc.LOMSService, host string, port uint32) *App {
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(interceptor.Validate))
 
 	loms_grpc.RegisterServer(grpcServer, lomsService)
 

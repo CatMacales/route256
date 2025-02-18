@@ -29,5 +29,5 @@ func (a *App) CreateOrder(ctx context.Context, userID model.UserID, items []mode
 		return [16]byte{}, fmt.Errorf("failed to create order: %w", err)
 	}
 
-	return [16]byte(response.OrderId), nil
+	return uuid.MustParse(response.OrderId), nil
 }

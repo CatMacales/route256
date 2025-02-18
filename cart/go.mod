@@ -3,6 +3,7 @@ module github.com/CatMacales/route256/cart
 go 1.22.0
 
 require (
+	github.com/envoyproxy/protoc-gen-validate v1.1.0
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/gojuno/minimock/v3 v3.4.4
 	github.com/google/uuid v1.6.0
