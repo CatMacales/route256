@@ -1,4 +1,5 @@
 LOCAL_BIN:=$(CURDIR)/bin
+GLOBAL_BIN:=$(CURDIR)/../bin
 
 PROTOC = PATH="$$PATH:$(LOCAL_BIN)" protoc
 
@@ -21,12 +22,9 @@ vendor-proto: vendor-rm vendor-proto/validate
 .PHONY: bin-deps
 bin-deps:
 	$(info Installing binary dependencies...)
-
-	GOBIN=$(LOCAL_BIN) go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1 && \
-    GOBIN=$(LOCAL_BIN) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0 && \
-    GOBIN=$(LOCAL_BIN) go install github.com/envoyproxy/protoc-gen-validate@v1.0.4
-
-
+	GOBIN=$(LOCAL_BIN) go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
+	GOBIN=$(LOCAL_BIN) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
+	GOBIN=$(LOCAL_BIN) go install github.com/envoyproxy/protoc-gen-validate@v1.0.4
 
 LOMS_PROTO_PATH:=api/loms/v1
 
@@ -45,3 +43,17 @@ protoc-generate: bin-deps vendor-proto
         --validate_out="lang=go,paths=source_relative:pkg/${LOMS_PROTO_PATH}" \
 		${LOMS_PROTO_PATH}/loms.proto
 	go mod tidy
+
+.PHONY: gen-mocks
+gen-mocks:
+	$(LOCAL_BIN)/minimock -i github.com/CatMacales/route256/loms/internal/service/loms.OrderProvider -o ./internal/service/loms/mock/order_provider_mock.go -n OrderProviderMock -p mock
+	$(LOCAL_BIN)/minimock -i github.com/CatMacales/route256/loms/internal/service/loms.StockProvider -o ./internal/service/loms/mock/stock_provider_mock.go -n StockProviderMock -p mock
+	go mod tidy
+
+.PHONY: cyclo-report
+cyclo-report:
+	$(GLOBAL_BIN)/gocyclo -avg -top 10 -ignore ".*_mock.go|.*.pb.*" .
+
+.PHONY: cognit-report
+cognit-report:
+	$(GLOBAL_BIN)/gocognit -avg -top 10 -ignore '.*_mock.go|.*.pb.*' .
