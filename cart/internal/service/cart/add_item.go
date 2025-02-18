@@ -25,8 +25,8 @@ func (s *Service) AddItem(ctx context.Context, userID model.UserID, item model.I
 	}
 
 	count, err := s.lomsService.GetStockInfo(ctx, item.SKU)
-	if err != nil {
-		if errors.Is(err, loms_app.ErrSkuNotFound) || uint64(item.Count) > count {
+	if err != nil || uint64(item.Count) > count {
+		if errors.Is(err, loms_app.ErrStockNotFound) || uint64(item.Count) > count {
 			return service.ErrNotEnoughStock
 		}
 

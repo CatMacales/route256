@@ -17,7 +17,7 @@ func (a *App) GetStockInfo(ctx context.Context, sku model.Sku) (uint64, error) {
 	if err != nil {
 		st, _ := status.FromError(err)
 		if st.Code() == codes.NotFound {
-			return 0, fmt.Errorf("%w: %s", ErrSkuNotFound, st.Message())
+			return 0, fmt.Errorf("%w: %s", ErrStockNotFound, st.Message())
 		}
 		return 0, fmt.Errorf("failed to get stock info: %w", err)
 	}

@@ -12,8 +12,9 @@ bin-deps:
 
 .PHONY: gen-mocks
 gen-mocks:
-	$(CART_BIN)/minimock -i github.com/CatMacales/route256/cart/internal/service/cart.CartRepository -o ./internal/service/cart/mock/cart_repository_mock.go -n CartRepositoryMock -p mock
+	$(CART_BIN)/minimock -i github.com/CatMacales/route256/cart/internal/service/cart.CartProvider -o ./internal/service/cart/mock/cart_provider_mock.go -n CartProviderMock -p mock
 	$(CART_BIN)/minimock -i github.com/CatMacales/route256/cart/internal/service/cart.ProductService -o ./internal/service/cart/mock/product_service_mock.go -n ProductServiceMock -p mock
+	$(CART_BIN)/minimock -i github.com/CatMacales/route256/cart/internal/service/cart.LOMSService -o ./internal/service/cart/mock/loms_service_mock.go -n LOMSServiceMock -p mock
 	go mod tidy
 
 .PHONY: test-coverage

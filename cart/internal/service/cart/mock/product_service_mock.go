@@ -19,9 +19,9 @@ type ProductServiceMock struct {
 	t          minimock.Tester
 	finishOnce sync.Once
 
-	funcGetProduct          func(ctx context.Context, sku uint32) (pp1 *model.Product, err error)
+	funcGetProduct          func(ctx context.Context, u1 uint32) (pp1 *model.Product, err error)
 	funcGetProductOrigin    string
-	inspectFuncGetProduct   func(ctx context.Context, sku uint32)
+	inspectFuncGetProduct   func(ctx context.Context, u1 uint32)
 	afterGetProductCounter  uint64
 	beforeGetProductCounter uint64
 	GetProductMock          mProductServiceMockGetProduct
@@ -70,13 +70,13 @@ type ProductServiceMockGetProductExpectation struct {
 // ProductServiceMockGetProductParams contains parameters of the ProductService.GetProduct
 type ProductServiceMockGetProductParams struct {
 	ctx context.Context
-	sku uint32
+	u1  uint32
 }
 
 // ProductServiceMockGetProductParamPtrs contains pointers to parameters of the ProductService.GetProduct
 type ProductServiceMockGetProductParamPtrs struct {
 	ctx *context.Context
-	sku *uint32
+	u1  *uint32
 }
 
 // ProductServiceMockGetProductResults contains results of the ProductService.GetProduct
@@ -89,7 +89,7 @@ type ProductServiceMockGetProductResults struct {
 type ProductServiceMockGetProductExpectationOrigins struct {
 	origin    string
 	originCtx string
-	originSku string
+	originU1  string
 }
 
 // Marks this method to be optional. The default behavior of any method with Return() is '1 or more', meaning
@@ -103,7 +103,7 @@ func (mmGetProduct *mProductServiceMockGetProduct) Optional() *mProductServiceMo
 }
 
 // Expect sets up expected params for ProductService.GetProduct
-func (mmGetProduct *mProductServiceMockGetProduct) Expect(ctx context.Context, sku uint32) *mProductServiceMockGetProduct {
+func (mmGetProduct *mProductServiceMockGetProduct) Expect(ctx context.Context, u1 uint32) *mProductServiceMockGetProduct {
 	if mmGetProduct.mock.funcGetProduct != nil {
 		mmGetProduct.mock.t.Fatalf("ProductServiceMock.GetProduct mock is already set by Set")
 	}
@@ -116,7 +116,7 @@ func (mmGetProduct *mProductServiceMockGetProduct) Expect(ctx context.Context, s
 		mmGetProduct.mock.t.Fatalf("ProductServiceMock.GetProduct mock is already set by ExpectParams functions")
 	}
 
-	mmGetProduct.defaultExpectation.params = &ProductServiceMockGetProductParams{ctx, sku}
+	mmGetProduct.defaultExpectation.params = &ProductServiceMockGetProductParams{ctx, u1}
 	mmGetProduct.defaultExpectation.expectationOrigins.origin = minimock.CallerInfo(1)
 	for _, e := range mmGetProduct.expectations {
 		if minimock.Equal(e.params, mmGetProduct.defaultExpectation.params) {
@@ -150,8 +150,8 @@ func (mmGetProduct *mProductServiceMockGetProduct) ExpectCtxParam1(ctx context.C
 	return mmGetProduct
 }
 
-// ExpectSkuParam2 sets up expected param sku for ProductService.GetProduct
-func (mmGetProduct *mProductServiceMockGetProduct) ExpectSkuParam2(sku uint32) *mProductServiceMockGetProduct {
+// ExpectU1Param2 sets up expected param u1 for ProductService.GetProduct
+func (mmGetProduct *mProductServiceMockGetProduct) ExpectU1Param2(u1 uint32) *mProductServiceMockGetProduct {
 	if mmGetProduct.mock.funcGetProduct != nil {
 		mmGetProduct.mock.t.Fatalf("ProductServiceMock.GetProduct mock is already set by Set")
 	}
@@ -167,14 +167,14 @@ func (mmGetProduct *mProductServiceMockGetProduct) ExpectSkuParam2(sku uint32) *
 	if mmGetProduct.defaultExpectation.paramPtrs == nil {
 		mmGetProduct.defaultExpectation.paramPtrs = &ProductServiceMockGetProductParamPtrs{}
 	}
-	mmGetProduct.defaultExpectation.paramPtrs.sku = &sku
-	mmGetProduct.defaultExpectation.expectationOrigins.originSku = minimock.CallerInfo(1)
+	mmGetProduct.defaultExpectation.paramPtrs.u1 = &u1
+	mmGetProduct.defaultExpectation.expectationOrigins.originU1 = minimock.CallerInfo(1)
 
 	return mmGetProduct
 }
 
 // Inspect accepts an inspector function that has same arguments as the ProductService.GetProduct
-func (mmGetProduct *mProductServiceMockGetProduct) Inspect(f func(ctx context.Context, sku uint32)) *mProductServiceMockGetProduct {
+func (mmGetProduct *mProductServiceMockGetProduct) Inspect(f func(ctx context.Context, u1 uint32)) *mProductServiceMockGetProduct {
 	if mmGetProduct.mock.inspectFuncGetProduct != nil {
 		mmGetProduct.mock.t.Fatalf("Inspect function is already set for ProductServiceMock.GetProduct")
 	}
@@ -199,7 +199,7 @@ func (mmGetProduct *mProductServiceMockGetProduct) Return(pp1 *model.Product, er
 }
 
 // Set uses given function f to mock the ProductService.GetProduct method
-func (mmGetProduct *mProductServiceMockGetProduct) Set(f func(ctx context.Context, sku uint32) (pp1 *model.Product, err error)) *ProductServiceMock {
+func (mmGetProduct *mProductServiceMockGetProduct) Set(f func(ctx context.Context, u1 uint32) (pp1 *model.Product, err error)) *ProductServiceMock {
 	if mmGetProduct.defaultExpectation != nil {
 		mmGetProduct.mock.t.Fatalf("Default expectation is already set for the ProductService.GetProduct method")
 	}
@@ -215,14 +215,14 @@ func (mmGetProduct *mProductServiceMockGetProduct) Set(f func(ctx context.Contex
 
 // When sets expectation for the ProductService.GetProduct which will trigger the result defined by the following
 // Then helper
-func (mmGetProduct *mProductServiceMockGetProduct) When(ctx context.Context, sku uint32) *ProductServiceMockGetProductExpectation {
+func (mmGetProduct *mProductServiceMockGetProduct) When(ctx context.Context, u1 uint32) *ProductServiceMockGetProductExpectation {
 	if mmGetProduct.mock.funcGetProduct != nil {
 		mmGetProduct.mock.t.Fatalf("ProductServiceMock.GetProduct mock is already set by Set")
 	}
 
 	expectation := &ProductServiceMockGetProductExpectation{
 		mock:               mmGetProduct.mock,
-		params:             &ProductServiceMockGetProductParams{ctx, sku},
+		params:             &ProductServiceMockGetProductParams{ctx, u1},
 		expectationOrigins: ProductServiceMockGetProductExpectationOrigins{origin: minimock.CallerInfo(1)},
 	}
 	mmGetProduct.expectations = append(mmGetProduct.expectations, expectation)
@@ -257,17 +257,17 @@ func (mmGetProduct *mProductServiceMockGetProduct) invocationsDone() bool {
 }
 
 // GetProduct implements mm_cart.ProductService
-func (mmGetProduct *ProductServiceMock) GetProduct(ctx context.Context, sku uint32) (pp1 *model.Product, err error) {
+func (mmGetProduct *ProductServiceMock) GetProduct(ctx context.Context, u1 uint32) (pp1 *model.Product, err error) {
 	mm_atomic.AddUint64(&mmGetProduct.beforeGetProductCounter, 1)
 	defer mm_atomic.AddUint64(&mmGetProduct.afterGetProductCounter, 1)
 
 	mmGetProduct.t.Helper()
 
 	if mmGetProduct.inspectFuncGetProduct != nil {
-		mmGetProduct.inspectFuncGetProduct(ctx, sku)
+		mmGetProduct.inspectFuncGetProduct(ctx, u1)
 	}
 
-	mm_params := ProductServiceMockGetProductParams{ctx, sku}
+	mm_params := ProductServiceMockGetProductParams{ctx, u1}
 
 	// Record call args
 	mmGetProduct.GetProductMock.mutex.Lock()
@@ -286,7 +286,7 @@ func (mmGetProduct *ProductServiceMock) GetProduct(ctx context.Context, sku uint
 		mm_want := mmGetProduct.GetProductMock.defaultExpectation.params
 		mm_want_ptrs := mmGetProduct.GetProductMock.defaultExpectation.paramPtrs
 
-		mm_got := ProductServiceMockGetProductParams{ctx, sku}
+		mm_got := ProductServiceMockGetProductParams{ctx, u1}
 
 		if mm_want_ptrs != nil {
 
@@ -295,9 +295,9 @@ func (mmGetProduct *ProductServiceMock) GetProduct(ctx context.Context, sku uint
 					mmGetProduct.GetProductMock.defaultExpectation.expectationOrigins.originCtx, *mm_want_ptrs.ctx, mm_got.ctx, minimock.Diff(*mm_want_ptrs.ctx, mm_got.ctx))
 			}
 
-			if mm_want_ptrs.sku != nil && !minimock.Equal(*mm_want_ptrs.sku, mm_got.sku) {
-				mmGetProduct.t.Errorf("ProductServiceMock.GetProduct got unexpected parameter sku, expected at\n%s:\nwant: %#v\n got: %#v%s\n",
-					mmGetProduct.GetProductMock.defaultExpectation.expectationOrigins.originSku, *mm_want_ptrs.sku, mm_got.sku, minimock.Diff(*mm_want_ptrs.sku, mm_got.sku))
+			if mm_want_ptrs.u1 != nil && !minimock.Equal(*mm_want_ptrs.u1, mm_got.u1) {
+				mmGetProduct.t.Errorf("ProductServiceMock.GetProduct got unexpected parameter u1, expected at\n%s:\nwant: %#v\n got: %#v%s\n",
+					mmGetProduct.GetProductMock.defaultExpectation.expectationOrigins.originU1, *mm_want_ptrs.u1, mm_got.u1, minimock.Diff(*mm_want_ptrs.u1, mm_got.u1))
 			}
 
 		} else if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
@@ -312,9 +312,9 @@ func (mmGetProduct *ProductServiceMock) GetProduct(ctx context.Context, sku uint
 		return (*mm_results).pp1, (*mm_results).err
 	}
 	if mmGetProduct.funcGetProduct != nil {
-		return mmGetProduct.funcGetProduct(ctx, sku)
+		return mmGetProduct.funcGetProduct(ctx, u1)
 	}
-	mmGetProduct.t.Fatalf("Unexpected call to ProductServiceMock.GetProduct. %v %v", ctx, sku)
+	mmGetProduct.t.Fatalf("Unexpected call to ProductServiceMock.GetProduct. %v %v", ctx, u1)
 	return
 }
 
