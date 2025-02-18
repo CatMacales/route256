@@ -22,6 +22,7 @@ type ProductService interface {
 
 type LOMSService interface {
 	CreateOrder(context.Context, model.UserID, []model.Item) (uuid.UUID, error)
+	GetStockInfo(context.Context, model.Sku) (uint64, error)
 }
 
 type Service struct {

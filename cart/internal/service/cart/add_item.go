@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/CatMacales/route256/cart/internal/app/loms"
 	"github.com/CatMacales/route256/cart/internal/app/product"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
 	"github.com/CatMacales/route256/cart/internal/service"
@@ -18,6 +19,15 @@ func (s *Service) AddItem(ctx context.Context, userID model.UserID, item model.I
 	if err != nil {
 		if errors.Is(err, product_app.ErrProductNotFound) {
 			return service.ErrProductNotFound
+		}
+
+		return err
+	}
+
+	count, err := s.lomsService.GetStockInfo(ctx, item.SKU)
+	if err != nil {
+		if errors.Is(err, loms_app.ErrSkuNotFound) || uint64(item.Count) > count {
+			return service.ErrNotEnoughStock
 		}
 
 		return err

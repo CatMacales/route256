@@ -9,6 +9,7 @@ import (
 )
 
 // TODO: https://medium.com/@rluders/improving-request-validation-and-response-handling-in-go-microservices-cc54208123f2
+// TODO: add to every method handle errors
 
 type CartService interface {
 	AddItem(context.Context, model.UserID, model.Item) error

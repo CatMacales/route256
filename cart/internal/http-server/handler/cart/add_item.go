@@ -56,7 +56,7 @@ func (h *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
 
 	err = h.cartService.AddItem(r.Context(), addItemRequest.UserID, inputItem)
 	if err != nil {
-		if errors.Is(err, service.ErrEmptyCart) {
+		if errors.Is(err, service.ErrProductNotFound) || errors.Is(err, service.ErrNotEnoughStock) {
 			http_server.GetErrorResponse(w, ADD_ITEM, err, http.StatusPreconditionFailed)
 			return
 		}
