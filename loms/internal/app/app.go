@@ -3,7 +3,9 @@ package app
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/CatMacales/route256/loms/internal/app/grpc"
+	"github.com/CatMacales/route256/loms/internal/app/http-gateway"
 	"github.com/CatMacales/route256/loms/internal/repository/memory/order"
 	"github.com/CatMacales/route256/loms/internal/repository/memory/stock"
 	"github.com/CatMacales/route256/loms/internal/service/loms"
@@ -12,6 +14,7 @@ import (
 
 type App struct {
 	GRPCServer      *grpc_app.App
+	HttpGateway     *http_gateway_app.App
 	stockRepository *stock_repository.Repository
 }
 
@@ -21,16 +24,18 @@ type stockData struct {
 	Reserved   uint64 `json:"reserved"`
 }
 
-func New(host string, port uint32) *App {
+func New(grpcHost, httpHost string, grpcPort, HttpPort uint32) *App {
 	orderRepository := order_repository.NewRepository()
 	stockRepository := stock_repository.NewRepository()
 
 	lomsService := loms.NewService(orderRepository, stockRepository)
 
-	grpcApp := grpc_app.New(lomsService, host, port)
+	grpcApp := grpc_app.New(lomsService, grpcHost, grpcPort)
+	httpGatewayApp := http_gateway_app.New(httpHost, HttpPort, fmt.Sprintf("%s:%d", grpcHost, grpcPort))
 
 	return &App{
 		GRPCServer:      grpcApp,
+		HttpGateway:     httpGatewayApp,
 		stockRepository: stockRepository,
 	}
 }

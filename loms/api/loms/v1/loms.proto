@@ -5,17 +5,39 @@ package route256.loms.pkg.loms.v1;
 option go_package = "github.com/CatMacales/route256/loms/pkg/api/loms/v1;loms";
 
 import "validate/validate.proto";
+import "google/api/annotations.proto";
 
 service LOMS{
-  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){}
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){
+    option (google.api.http) = {
+      post: "/v1/orders/create",
+      body: "items"
+    };
+  }
 
-  rpc GetOrderInfo(GetOrderInfoRequest) returns (GetOrderInfoResponse){}
+  rpc GetOrderInfo(GetOrderInfoRequest) returns (GetOrderInfoResponse){
+    option (google.api.http) = {
+      get: "/v1/orders/{order_id}"
+    };
+  }
 
-  rpc PayOrder(PayOrderRequest) returns (PayOrderResponse){}
+  rpc PayOrder(PayOrderRequest) returns (PayOrderResponse){
+    option (google.api.http) = {
+      post: "/v1/orders/{order_id}/pay"
+    };
+  }
 
-  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse){}
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse){
+    option (google.api.http) = {
+      post: "/v1/orders/{order_id}/cancel"
+    };
+  }
 
-  rpc GetStockInfo(GetStockInfoRequest) returns (GetStockInfoResponse){}
+  rpc GetStockInfo(GetStockInfoRequest) returns (GetStockInfoResponse){
+    option (google.api.http) = {
+      get: "/v1/stocks/{sku}"
+    };
+  }
 }
 
 message CreateOrderRequest{

@@ -15,7 +15,7 @@ import (
 type App struct {
 	ProductService *product_app.App
 	LOMSService    *loms_app.App
-	Server         *server.Server
+	Server         *server.App
 }
 
 func New(host string, port uint32, productURL, productToken, lomsURL string) *App {

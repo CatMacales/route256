@@ -7,9 +7,19 @@ import (
 )
 
 type Config struct {
-	Env  string `yaml:"env" env-default:"prod"`
+	Env  string     `yaml:"env" env-default:"prod"`
+	Grpc GRPCConfig `yaml:"grpc"`
+	HTTP HTTPConfig `yaml:"http"`
+}
+
+type GRPCConfig struct {
 	Host string `yaml:"host" env-default:"localhost"`
 	Port uint32 `yaml:"port" env-default:"50050"`
+}
+
+type HTTPConfig struct {
+	Host string `yaml:"host" env-default:"localhost"`
+	Port uint32 `yaml:"port" env-default:"8080"`
 }
 
 func MustLoad() *Config {

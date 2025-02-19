@@ -17,9 +17,17 @@ const (
 func main() {
 	cfg := config.MustLoad()
 
-	application := app.New(cfg.Host, cfg.Port)
+	application := app.New(cfg.Grpc.Host, cfg.HTTP.Host, cfg.Grpc.Port, cfg.HTTP.Port)
 
 	application.MustInitStocks(context.Background(), stocksInitPath)
 
-	application.GRPCServer.MustRun()
+	go func() {
+		application.GRPCServer.MustRun()
+	}()
+
+	application.HttpGateway.MustConnect()
+	err := application.HttpGateway.Serve()
+	if err != nil {
+		panic(err)
+	}
 }
