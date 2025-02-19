@@ -16,8 +16,8 @@ func (s *Service) CreateOrder(ctx context.Context, order model.Order) (model.Ord
 
 	err = s.stockProvider.Reserve(ctx, order.Items)
 	if err != nil {
-		err = s.orderProvider.SetStatus(ctx, orderID, model.StatusFailed)
-		if err != nil {
+		statusErr := s.orderProvider.SetStatus(ctx, orderID, model.StatusFailed)
+		if statusErr != nil {
 			return model.OrderID{}, fmt.Errorf("failed to set order status to %s: %w", model.StatusFailed.String(), err)
 		}
 		return model.OrderID{}, fmt.Errorf("failed to reserve stocks: %w", err)

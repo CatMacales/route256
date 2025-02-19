@@ -12,6 +12,13 @@ bin-deps:
 	GOBIN=$(LOCAL_BIN) go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.6.0
 	GOBIN=$(LOCAL_BIN) go install github.com/uudashr/gocognit/cmd/gocognit@v1.2.0
 
+.PHONY: test-coverage
+test-coverage:
+	@echo "Cart coverage"
+	cd $(CART_DIR) && make test-coverage
+	@echo "LOMS coverage"
+	cd $(LOMS_DIR) && make test-coverage
+
 .PHONY: cyclo-report
 cyclo-report:
 	@echo "Cart report"

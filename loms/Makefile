@@ -46,9 +46,14 @@ protoc-generate: bin-deps vendor-proto
 
 .PHONY: gen-mocks
 gen-mocks:
-	$(LOCAL_BIN)/minimock -i github.com/CatMacales/route256/loms/internal/service/loms.OrderProvider -o ./internal/service/loms/mock/order_provider_mock.go -n OrderProviderMock -p mock
-	$(LOCAL_BIN)/minimock -i github.com/CatMacales/route256/loms/internal/service/loms.StockProvider -o ./internal/service/loms/mock/stock_provider_mock.go -n StockProviderMock -p mock
+	$(GLOBAL_BIN)/minimock -i github.com/CatMacales/route256/loms/internal/service/loms.OrderProvider -o ./internal/service/loms/mock/order_provider_mock.go -n OrderProviderMock -p mock
+	$(GLOBAL_BIN)/minimock -i github.com/CatMacales/route256/loms/internal/service/loms.StockProvider -o ./internal/service/loms/mock/stock_provider_mock.go -n StockProviderMock -p mock
 	go mod tidy
+
+.PHONY: test-coverage
+test-coverage:
+	go test ./internal/service/loms -coverprofile cover.out.tmp && cat cover.out.tmp | grep -v "_mock.go" > cover.out && rm cover.out.tmp && go tool cover -func cover.out && rm cover.out
+
 
 .PHONY: cyclo-report
 cyclo-report:
