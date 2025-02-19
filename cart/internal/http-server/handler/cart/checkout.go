@@ -1,7 +1,6 @@
 package cart_handler
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"github.com/CatMacales/route256/cart/internal/http-server"
@@ -48,7 +47,7 @@ func (h *Handler) Checkout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	checkoutResponse := CheckoutResponse{
-		OrderID: base64.StdEncoding.EncodeToString([]byte(orderID.String())),
+		OrderID: orderID.String(),
 	}
 
 	rawResponse, err := json.Marshal(checkoutResponse)
