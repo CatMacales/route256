@@ -18,7 +18,13 @@ type App struct {
 
 // New creates new gRPC server app.
 func New(lomsService loms_grpc.LOMSService, host string, port uint32) *App {
-	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(interceptor.Validate))
+	grpcServer := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			interceptor.Logger,
+			interceptor.Panic,
+			interceptor.Validate,
+		),
+	)
 
 	loms_grpc.RegisterServer(grpcServer, lomsService)
 
