@@ -6,12 +6,33 @@ option go_package = "github.com/CatMacales/route256/loms/pkg/api/loms/v1;loms";
 
 import "validate/validate.proto";
 import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "LOMS API";
+    description: "API for LOMS";
+    version: "1.0.0";
+  };
+  schemes: HTTP;
+  consumes: "application/json";
+  produces: "application/json";
+};
 
 service LOMS{
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    description: "LOMS service",
+  };
+
   rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){
     option (google.api.http) = {
       post: "/v1/orders/create",
       body: "items"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create a new order"
+      description: "Creates a new order with the specified items for a user."
+      tags: "Orders"
     };
   }
 
@@ -19,11 +40,21 @@ service LOMS{
     option (google.api.http) = {
       get: "/v1/orders/{order_id}"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get order information"
+      description: "Retrieves information about a specific order using its ID."
+      tags: "Orders"
+    };
   }
 
   rpc PayOrder(PayOrderRequest) returns (PayOrderResponse){
     option (google.api.http) = {
       post: "/v1/orders/{order_id}/pay"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Pay for an order"
+      description: "Processes payment for a specified order."
+      tags: "Orders"
     };
   }
 
@@ -31,11 +62,21 @@ service LOMS{
     option (google.api.http) = {
       post: "/v1/orders/{order_id}/cancel"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Cancel an order"
+      description: "Cancels a specified order."
+      tags: "Orders"
+    };
   }
 
   rpc GetStockInfo(GetStockInfoRequest) returns (GetStockInfoResponse){
     option (google.api.http) = {
       get: "/v1/stocks/{sku}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get stock information"
+      description: "Retrieves stock information for a specific SKU."
+      tags: "Stocks"
     };
   }
 }

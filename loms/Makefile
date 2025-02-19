@@ -23,24 +23,38 @@ vendor-proto/google/api:
 	mv vendor-proto/googleapis/google/api vendor-proto/google
 	rm -rf vendor-proto/googleapis
 
+vendor-proto/protoc-gen-openapiv2/options:
+	git clone -b main --single-branch -n --depth=1 --filter=tree:0 \
+ 		https://github.com/grpc-ecosystem/grpc-gateway vendor-proto/grpc-ecosystem && \
+ 	cd vendor-proto/grpc-ecosystem && \
+	git sparse-checkout set --no-cone protoc-gen-openapiv2/options && \
+	git checkout
+	mkdir -p vendor-proto/protoc-gen-openapiv2
+	mv vendor-proto/grpc-ecosystem/protoc-gen-openapiv2/options vendor-proto/protoc-gen-openapiv2
+	rm -rf vendor-proto/grpc-ecosystem
+
 .PHONY: vendor-rm
 vendor-rm:
 	rm -rf vendor-proto
 
-vendor-proto: vendor-rm vendor-proto/validate vendor-proto/google/api
+vendor-proto: vendor-rm vendor-proto/validate vendor-proto/google/api vendor-proto/protoc-gen-openapiv2/options
 
 .PHONY: bin-deps
 bin-deps:
 	$(info Installing binary dependencies...)
+
 	GOBIN=$(LOCAL_BIN) go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
 	GOBIN=$(LOCAL_BIN) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
 	GOBIN=$(LOCAL_BIN) go install github.com/envoyproxy/protoc-gen-validate@v1.0.4
 	GOBIN=$(LOCAL_BIN) go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@v2.19.1
+	GOBIN=$(LOCAL_BIN) go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.19.1
+	GOBIN=$(LOCAL_BIN) go install github.com/go-swagger/go-swagger/cmd/swagger@v0.30.5
 
 LOMS_PROTO_PATH:=api/loms/v1
 
 .PHONY: protoc-generate
 protoc-generate: bin-deps vendor-proto
+	mkdir -p api/openapiv2
 	protoc \
 		-I ${LOMS_PROTO_PATH} \
 		-I vendor-proto \
@@ -55,6 +69,9 @@ protoc-generate: bin-deps vendor-proto
         --plugin=protoc-gen-grpc-gateway=$(LOCAL_BIN)/protoc-gen-grpc-gateway \
         --grpc-gateway_out pkg/${LOMS_PROTO_PATH} \
         --grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true \
+        --plugin=protoc-gen-openapiv2=$(LOCAL_BIN)/protoc-gen-openapiv2 \
+        --openapiv2_out api/openapiv2 \
+        --openapiv2_opt logtostderr=true \
 		${LOMS_PROTO_PATH}/loms.proto
 	go mod tidy
 
@@ -76,3 +93,7 @@ cyclo-report:
 .PHONY: cognit-report
 cognit-report:
 	$(GLOBAL_BIN)/gocognit -avg -top 10 -ignore '.*_mock.go|.*.pb.*' .
+
+.PHONY: serve-swagger
+serve-swagger:
+	bin/swagger serve -F=swagger api/openapiv2/loms.swagger.json
