@@ -2,18 +2,6 @@ package model
 
 import "github.com/CatMacales/route256/loms/pkg/api/loms/v1"
 
-func ProtoToOrder(createOrderRequest *loms.CreateOrderRequest) Order {
-	items := make([]Item, 0, len(createOrderRequest.Items))
-	for _, item := range createOrderRequest.Items {
-		items = append(items, Item{SKU: item.Sku, Count: uint16(item.Count)})
-	}
-	return Order{
-		UserID: createOrderRequest.UserId,
-		Items:  items,
-		Status: StatusUnknown,
-	}
-}
-
 func ProtoToItem(item *loms.Item) Item {
 	return Item{
 		SKU:   item.Sku,

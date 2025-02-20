@@ -20,8 +20,7 @@ import (
 )
 
 const (
-	stocksInitPath = "../../stock-data.json"
-	bufSize        = 1024 * 1024
+	bufSize = 1024 * 1024
 )
 
 func TestIntegration_Run(t *testing.T) {
@@ -35,14 +34,6 @@ type LOMSSuite struct {
 	listener  net.Listener
 	stockRepo *stock_repository.Repository
 	orderRepo *order_repository.Repository
-}
-type Config struct {
-	Grpc GRPCConfig
-}
-
-type GRPCConfig struct {
-	Host string
-	Port uint32
 }
 
 func (ls *LOMSSuite) SetupSuite() {
