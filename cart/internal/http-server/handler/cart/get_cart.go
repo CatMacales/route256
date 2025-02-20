@@ -33,7 +33,7 @@ func (h *Handler) GetCart(w http.ResponseWriter, r *http.Request) {
 
 	err = validation.BeautyStructValidate(getCartRequest)
 	if err != nil {
-		http_server.GetErrorResponse(w, DELETE_ITEM, err, http.StatusBadRequest)
+		http_server.GetErrorResponse(w, GET_CART, err, http.StatusBadRequest)
 		return
 	}
 

@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
 	"io"
 	"net/http"
 )
+
+const GET_PRODUCT_ENDPOINT = "/get_product"
 
 type getProductRequest struct {
 	Token string `json:"token"`
@@ -23,8 +26,6 @@ type getProductResponse struct {
 // It sends a POST request to the "/get_product" endpoint with the SKU and token.
 // Returns a Product model containing the product's name and price, or an error if the request fails.
 func (a *App) GetProduct(_ context.Context, sku uint32) (*model.Product, error) {
-	const getProductEndpoint = "/get_product"
-
 	rawRequest := getProductRequest{
 		Token: a.token,
 		SKU:   sku,
@@ -35,7 +36,7 @@ func (a *App) GetProduct(_ context.Context, sku uint32) (*model.Product, error) 
 	}
 
 	resp, err := a.client.Post(
-		a.url+getProductEndpoint,
+		a.url+GET_PRODUCT_ENDPOINT,
 		"application/json",
 		bytes.NewBuffer(request),
 	)
@@ -45,7 +46,7 @@ func (a *App) GetProduct(_ context.Context, sku uint32) (*model.Product, error) 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, handleHTTPError(resp.StatusCode)
+		return nil, handleGetProductError(resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -62,4 +63,15 @@ func (a *App) GetProduct(_ context.Context, sku uint32) (*model.Product, error) 
 		Name:  productResp.Name,
 		Price: productResp.Price,
 	}, nil
+}
+
+func handleGetProductError(statusCode int) error {
+	switch statusCode {
+	case http.StatusNotFound:
+		return ErrProductNotFound
+	case http.StatusUnauthorized:
+		return ErrInvalidToken
+	default:
+		return fmt.Errorf("unexpected status code: %d", statusCode)
+	}
 }

@@ -14,8 +14,7 @@ func TestDeleteCart(t *testing.T) {
 	ctrl := minimock.NewController(t)
 
 	type fields struct {
-		cartRepoMock *mock.CartRepositoryMock
-		productMock  *mock.ProductServiceMock
+		cartProviderMock *mock.CartProviderMock
 	}
 
 	type args struct {
@@ -29,9 +28,9 @@ func TestDeleteCart(t *testing.T) {
 		wantErr error
 	}{
 		{
-			name: "Success delete cart",
+			name: "success delete cart",
 			setup: func(fields *fields, args *args) {
-				fields.cartRepoMock.DeleteCartMock.Expect(ctx, args.userID).Return(nil)
+				fields.cartProviderMock.DeleteCartMock.Expect(ctx, args.userID).Return(nil)
 			},
 			args: args{
 				userID: 123,
@@ -43,12 +42,11 @@ func TestDeleteCart(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			f := fields{
-				productMock:  nil,
-				cartRepoMock: mock.NewCartRepositoryMock(ctrl),
+				cartProviderMock: mock.NewCartProviderMock(ctrl),
 			}
 			tt.setup(&f, &tt.args)
 
-			cartService := NewService(f.cartRepoMock, f.productMock)
+			cartService := NewService(f.cartProviderMock, nil, nil)
 
 			err := cartService.DeleteCart(ctx, tt.args.userID)
 

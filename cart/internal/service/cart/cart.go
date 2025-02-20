@@ -4,11 +4,12 @@ import (
 	"context"
 	"github.com/CatMacales/route256/cart/internal/domain/model"
 	"github.com/CatMacales/route256/cart/internal/http-server/handler/cart"
+	"github.com/google/uuid"
 )
 
 var _ cart_handler.CartService = (*Service)(nil)
 
-type CartRepository interface {
+type CartProvider interface {
 	AddItem(context.Context, model.UserID, model.Item) error
 	DeleteItem(context.Context, model.UserID, model.Sku) error
 	DeleteCart(context.Context, model.UserID) error
@@ -16,17 +17,24 @@ type CartRepository interface {
 }
 
 type ProductService interface {
-	GetProduct(_ context.Context, sku uint32) (*model.Product, error)
+	GetProduct(context.Context, uint32) (*model.Product, error)
+}
+
+type LOMSService interface {
+	CreateOrder(context.Context, model.UserID, []model.Item) (uuid.UUID, error)
+	GetStockInfo(context.Context, model.Sku) (uint64, error)
 }
 
 type Service struct {
-	cartRepository CartRepository
+	cartRepository CartProvider
 	productService ProductService
+	lomsService    LOMSService
 }
 
-func NewService(cartRepository CartRepository, productService ProductService) *Service {
+func NewService(cartRepository CartProvider, productService ProductService, lomsService LOMSService) *Service {
 	return &Service{
 		cartRepository: cartRepository,
 		productService: productService,
+		lomsService:    lomsService,
 	}
 }

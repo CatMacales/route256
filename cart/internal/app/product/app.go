@@ -1,7 +1,6 @@
 package product_app
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -16,16 +15,5 @@ func New(url, token string, client *http.Client) *App {
 		url:    url,
 		token:  token,
 		client: client,
-	}
-}
-
-func handleHTTPError(statusCode int) error {
-	switch statusCode {
-	case http.StatusNotFound:
-		return ErrProductNotFound
-	case http.StatusUnauthorized:
-		return ErrInvalidToken
-	default:
-		return fmt.Errorf("unexpected status code: %d", statusCode)
 	}
 }
