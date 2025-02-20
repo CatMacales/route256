@@ -11,7 +11,10 @@ import (
 )
 
 func (s *server) CreateOrder(ctx context.Context, request *loms.CreateOrderRequest) (*loms.CreateOrderResponse, error) {
-	orderID, err := s.lomsService.CreateOrder(ctx, model.ProtoToOrder(request))
+	orderID, err := s.lomsService.CreateOrder(ctx, model.Order{
+		UserID: request.UserId,
+		Items:  model.ProtoToItems(request.Items),
+	})
 	if err != nil {
 		if errors.Is(err, repository.ErrNotEnoughStock) {
 			return nil, status.Errorf(codes.FailedPrecondition, err.Error())

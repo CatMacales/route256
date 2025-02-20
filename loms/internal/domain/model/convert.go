@@ -14,14 +14,32 @@ func ProtoToOrder(createOrderRequest *loms.CreateOrderRequest) Order {
 	}
 }
 
-func OrderToProto(order *Order) *loms.GetOrderInfoResponse {
-	orderInfo := &loms.GetOrderInfoResponse{
-		UserId: order.UserID,
-		Status: loms.OrderStatus(order.Status),
-		Items:  make([]*loms.Item, 0, len(order.Items)),
+func ProtoToItem(item *loms.Item) Item {
+	return Item{
+		SKU:   item.Sku,
+		Count: uint16(item.Count),
 	}
-	for _, item := range order.Items {
-		orderInfo.Items = append(orderInfo.Items, &loms.Item{Sku: item.SKU, Count: uint32(item.Count)})
+}
+
+func ItemToProto(item *Item) *loms.Item {
+	return &loms.Item{
+		Sku:   item.SKU,
+		Count: uint32(item.Count),
 	}
-	return orderInfo
+}
+
+func ItemsToProto(items []Item) []*loms.Item {
+	protoItems := make([]*loms.Item, 0, len(items))
+	for _, item := range items {
+		protoItems = append(protoItems, ItemToProto(&item))
+	}
+	return protoItems
+}
+
+func ProtoToItems(protoItems []*loms.Item) []Item {
+	items := make([]Item, 0, len(protoItems))
+	for _, protoItem := range protoItems {
+		items = append(items, ProtoToItem(protoItem))
+	}
+	return items
 }

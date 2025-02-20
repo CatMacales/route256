@@ -32,13 +32,13 @@ func New(host string, port uint32, grpcUrl string) *App {
 	}
 }
 
-func (a *App) MustConnect() {
-	if err := a.Connect(); err != nil {
+func (a *App) MustConnectToGRPC() {
+	if err := a.ConnectToGRPC(); err != nil {
 		panic(err)
 	}
 }
 
-func (a *App) Connect() error {
+func (a *App) ConnectToGRPC() error {
 	conn, err := grpc.NewClient(a.grpcUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return err

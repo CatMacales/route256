@@ -21,5 +21,9 @@ func (s *server) GetOrderInfo(ctx context.Context, request *loms.GetOrderInfoReq
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
-	return model.OrderToProto(order), nil
+	return &loms.GetOrderInfoResponse{
+		Status: loms.OrderStatus(order.Status),
+		UserId: order.UserID,
+		Items:  model.ItemsToProto(order.Items),
+	}, nil
 }

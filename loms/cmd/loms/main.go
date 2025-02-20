@@ -25,7 +25,7 @@ func main() {
 		application.GRPCServer.MustRun()
 	}()
 
-	application.HttpGateway.MustConnect()
+	application.HttpGateway.MustConnectToGRPC()
 	err := application.HttpGateway.Serve()
 	if err != nil {
 		panic(err)
