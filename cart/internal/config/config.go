@@ -10,17 +10,17 @@ type Config struct {
 	Env            string               `yaml:"env" env-default:"prod"`
 	Host           string               `yaml:"host" env-default:"localhost"`
 	Port           uint32               `yaml:"port" env-default:"8080"`
-	ProductService ProductServiceConfig `yaml:"product_service"`
-	LOMSService    LOMSServiceConfig    `yaml:"loms_service"`
+	ProductService ProductServiceConfig `yaml:"product_service" env-required:"true"`
+	LOMSService    LOMSServiceConfig    `yaml:"loms_service" env-required:"true"`
 }
 
 type ProductServiceConfig struct {
-	URL   string `yaml:"url"`
-	Token string `yaml:"token"`
+	URL   string `yaml:"url" env-required:"true"`
+	Token string `yaml:"token" env-required:"true"`
 }
 
 type LOMSServiceConfig struct {
-	URL string `yaml:"url"`
+	URL string `yaml:"url" env-required:"true"`
 }
 
 func MustLoad() *Config {

@@ -4,6 +4,7 @@ package integration
 
 import (
 	"context"
+	"github.com/CatMacales/route256/cart/internal/app/loms"
 	"github.com/CatMacales/route256/cart/internal/app/product"
 	"github.com/CatMacales/route256/cart/internal/app/server"
 	"github.com/CatMacales/route256/cart/internal/http-server/handler/cart"
@@ -30,11 +31,16 @@ type CartSuite struct {
 
 type Config struct {
 	ProductService ProductServiceConfig
+	LOMSService    LOMSServiceConfig
 }
 
 type ProductServiceConfig struct {
 	URL   string
 	Token string
+}
+
+type LOMSServiceConfig struct {
+	URL string
 }
 
 func (cs *CartSuite) SetupSuite() {
@@ -43,15 +49,20 @@ func (cs *CartSuite) SetupSuite() {
 			URL:   "http://route256.pavl.uk:8080",
 			Token: "testtoken",
 		},
+		LOMSService: LOMSServiceConfig{
+			URL: "localhost:50050",
+		},
 	}
 
 	productApp := product_app.New(cfg.ProductService.URL, cfg.ProductService.Token, &http.Client{Transport: middleware.NewRetry(http.DefaultTransport)})
 	cs.productService = productApp
 
+	lomsApp := loms_app.New(cfg.LOMSService.URL)
+
 	cartRepository := cart_repository.NewRepository()
 	cs.cartRepo = cartRepository
 
-	cartService := cart.NewService(cartRepository, productApp)
+	cartService := cart.NewService(cartRepository, productApp, lomsApp)
 
 	handler := cart_handler.New(cartService)
 

@@ -14,7 +14,15 @@ gen-mocks:
 
 .PHONY: test-coverage
 test-coverage:
-	go test ./internal/service/cart ./internal/repository/memory/cart -coverprofile cover.out.tmp && cat cover.out.tmp | grep -v "_mock.go" > cover.out && rm cover.out.tmp && go tool cover -func cover.out && rm cover.out
+	go test ./internal/service/cart ./internal/repository/memory/cart -coverprofile cover.out.tmp && \
+	cat cover.out.tmp | grep -v "_mock.go" > cover.out && \
+	rm cover.out.tmp && \
+	go tool cover -func cover.out && \
+	rm cover.out
+
+.PHONY: test-integration
+test-integration:
+	go test ./test/integration -tags=integration,testmode
 
 .PHONY: cyclo-report
 cyclo-report:
